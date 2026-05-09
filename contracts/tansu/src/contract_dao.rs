@@ -609,7 +609,9 @@ impl DaoTrait for Tansu {
                 panic_with_error!(&env, &errors::ContractErrors::BadCommitment)
             }
             for commitment in &vote_choice.commitments {
-                Bls12381G1Affine::from_bytes(commitment);
+                if !Bls12381G1Affine::from_bytes(commitment).is_in_subgroup() {
+                    panic_with_error!(&env, &errors::ContractErrors::BadCommitment)
+                }
             }
         }
 
