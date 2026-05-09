@@ -38,6 +38,7 @@ impl DaoTrait for Tansu {
         project_key: Bytes,
         public_key: String,
     ) {
+        Tansu::require_not_paused(env.clone());
         crate::auth_maintainers(&env, &maintainer, &project_key);
 
         // generators
@@ -375,7 +376,6 @@ impl DaoTrait for Tansu {
         voter: Address,
     ) {
         Tansu::require_not_paused(env.clone());
-
         crate::auth_maintainers(&env, &maintainer, &project_key);
 
         let page = proposal_id / MAX_PROPOSALS_PER_PAGE;
@@ -728,7 +728,6 @@ impl DaoTrait for Tansu {
         seeds: Option<Vec<u128>>,
     ) -> types::ProposalStatus {
         Tansu::require_not_paused(env.clone());
-
         crate::auth_maintainers(&env, &maintainer, &project_key);
 
         let page = proposal_id / MAX_PROPOSALS_PER_PAGE;
