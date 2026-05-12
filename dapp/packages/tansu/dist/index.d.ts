@@ -9,6 +9,12 @@ import type { u32, u64, u128, Option } from "@stellar/stellar-sdk/contract";
 export * from "@stellar/stellar-sdk";
 export * as contract from "@stellar/stellar-sdk/contract";
 export * as rpc from "@stellar/stellar-sdk/rpc";
+export interface ProjectV1 {
+  config: Config;
+  maintainers: Array<string>;
+  name: string;
+  sub_projects: Option<Array<Buffer>>;
+}
 export interface Dao {
   proposals: Array<Proposal>;
 }
@@ -493,7 +499,7 @@ export interface Client {
    *
    * # Panics
    * * If the maintainer is not authorized
-   * * If the proposal is not active or voting period has ended
+   * * If the proposal is not active
    * * If no vote from the given voter exists
    */
   remove_vote: (
@@ -975,18 +981,9 @@ export interface Client {
     options?: MethodOptions,
   ) => Promise<AssembledTransaction<null>>;
   /**
-   * Construct and simulate a add_projects_to_pagination transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
-   * Add projects to the new pagination list. This is used to migrate projects when the project was created before the pagination was implemented.
-   *
-   * # Arguments
-   * * `env` - The environment object
-   * * `admin` - The admin address
-   * * `names` - The names of the projects to add
-   *
-   * # Returns
-   * * `()`
+   * Construct and simulate a projects_migration transaction. Returns an `AssembledTransaction` object which will have a `result` field containing the result of the simulation. If this transaction changes contract state, you will need to call `signAndSend()` on the returned object.
    */
-  add_projects_to_pagination: (
+  projects_migration: (
     {
       admin,
       names,
@@ -1419,7 +1416,7 @@ export declare class Client extends ContractClient {
       json: string,
     ) => AssembledTransaction<UpgradeProposal>;
     set_collateral_contract: (json: string) => AssembledTransaction<null>;
-    add_projects_to_pagination: (json: string) => AssembledTransaction<null>;
+    projects_migration: (json: string) => AssembledTransaction<null>;
     add_member: (json: string) => AssembledTransaction<null>;
     get_badges: (json: string) => AssembledTransaction<Badges>;
     get_member: (json: string) => AssembledTransaction<Member>;
