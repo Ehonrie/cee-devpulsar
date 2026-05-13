@@ -113,7 +113,7 @@ jobs:
 
           {
             echo "cid=${cid}"
-            echo "url=https://ipfs.filebase.io/ipfs/${cid}"
+            echo "url=https://ipfs.io/ipfs/${cid}"
           } >> "${GITHUB_OUTPUT}"
 
       - name: Job summary
