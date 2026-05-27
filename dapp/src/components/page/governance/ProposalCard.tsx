@@ -1,6 +1,8 @@
+import { useStore } from "@nanostores/react";
 import Button from "components/utils/Button";
 import type { ProposalView } from "types/proposal";
-import { truncateMiddle } from "utils/utils";
+import { connectedPublicKey } from "utils/store";
+import { hasUserVoted, truncateMiddle } from "utils/utils";
 import ProposalStatusSection from "../proposal/ProposalStatusSection";
 
 interface Props {
@@ -9,8 +11,10 @@ interface Props {
 }
 
 const ProposalCard: React.FC<Props> = ({ proposal, onVoteClick }) => {
+  const connectedAddress = useStore(connectedPublicKey);
   const projectName =
     new URLSearchParams(window.location.search).get("name") || "";
+  const userHasVoted = hasUserVoted(proposal.voteStatus, connectedAddress);
 
   return (
     <a
@@ -32,17 +36,20 @@ const ProposalCard: React.FC<Props> = ({ proposal, onVoteClick }) => {
           </span>
         </div>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <ProposalStatusSection proposal={proposal} />
         {proposal.status == "active" && (
           <Button
-            icon="/icons/vote.svg"
+            size="md"
+            type={userHasVoted ? "secondary" : "primary"}
+            icon={userHasVoted ? "" : "/icons/vote.svg"}
+            disabled={userHasVoted}
             onClick={(e) => {
               e.preventDefault();
-              onVoteClick?.();
+              if (!userHasVoted) onVoteClick?.();
             }}
           >
-            Vote
+            {userHasVoted ? "Already Voted" : "Vote"}
           </Button>
         )}
       </div>
