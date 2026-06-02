@@ -10,7 +10,8 @@ rid=$(rad inspect --rid)
 node=${RADICLE_LOG_NODE:-iris.radicle.xyz}
 sha=$(git rev-parse HEAD)
 keep=90
-log=.radicle/ci/${sha}.log
+date=$(date -u +%F)
+log=.radicle/ci/${date}_${sha}.log
 
 rad_push_url=$(git config --get remote.rad.pushurl)
 rad_namespace=${rad_push_url##*/}
@@ -28,11 +29,21 @@ git worktree add --detach "$ci_worktree_dir" HEAD
   git rm -rf . >/dev/null
   git clean -fd
 
-  # first push: remote may not have rad/ci yet, pull existing logs otherwise
-  git checkout "rad/$rad_ci_branch" -- .radicle/ci || true
+  # restore prior logs; absent branch is the first-run case, a failed restore is not
+  if git rev-parse --verify --quiet "refs/remotes/rad/$rad_ci_branch" >/dev/null; then
+    git checkout "rad/$rad_ci_branch" -- .radicle/ci \
+      || echo "[ci] WARNING: $rad_ci_branch exists but restoring prior logs failed; archive may be overwritten" >&2
+  else
+    echo "[ci] no existing $rad_ci_branch on rad; starting fresh log archive"
+  fi
   mkdir -p .radicle/ci
 
-  find .radicle/ci -maxdepth 1 -type f -name '*.log' -mtime +$keep -delete
+  # prune logs older than $keep days using the YYYY-MM-DD filename prefix
+  cutoff=$(date -u -v-"$keep"d +%F 2>/dev/null || date -u -d "$keep days ago" +%F)
+  for f in .radicle/ci/*.log; do
+    [ -e "$f" ] || continue
+    d=$(basename "$f"); [[ ${d%%_*} < $cutoff ]] && rm -f "$f"
+  done
 )
 
 # Rad job entry
