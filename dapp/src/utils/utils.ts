@@ -13,7 +13,9 @@ import {
   type VoteStatus,
 } from "types/proposal";
 import {
+  buildRadicleBrowseUrl,
   buildRepositoryUrlFromProjectPath,
+  getRepositoryProvider,
   normalizeRepositoryUrl,
 } from "./editLinkFunctions";
 
@@ -35,11 +37,17 @@ export function extractConfigData(tomlData: any, project: Project) {
   const projectType = tomlData.PROJECT_TYPE || "SOFTWARE";
   const canonicalRepositoryUrl =
     normalizeRepositoryUrl(project.config.url) || project.config.url || "";
+  const repositoryProvider = getRepositoryProvider(canonicalRepositoryUrl);
   const repositoryLink =
-    buildRepositoryUrlFromProjectPath(
-      canonicalRepositoryUrl,
-      tomlData.DOCUMENTATION?.ORG_GITHUB,
-    ) || canonicalRepositoryUrl;
+    repositoryProvider === "radicle"
+      ? buildRadicleBrowseUrl(
+          canonicalRepositoryUrl,
+          tomlData.DOCUMENTATION?.ORG_REPOSITORY_SEED,
+        )
+      : buildRepositoryUrlFromProjectPath(
+          canonicalRepositoryUrl,
+          tomlData.DOCUMENTATION?.ORG_GITHUB,
+        ) || canonicalRepositoryUrl;
 
   return {
     projectName: project.name,
@@ -65,7 +73,9 @@ export function extractConfigData(tomlData: any, project: Project) {
       }),
     },
     authorGithubNames:
-      tomlData.PRINCIPALS?.map((p: { github: string }) => p.github) || [],
+      tomlData.PRINCIPALS?.map(
+        (p: { github?: string; radicle?: string }) => p.github || p.radicle,
+      ).filter(Boolean) || [],
     maintainersAddresses: tomlData.ACCOUNTS || [],
   };
 }
