@@ -1,4 +1,4 @@
-# Tansu - dApp
+# CEE-DEVPULSAR - dApp
 
 A decentralized application built on Soroban for governance and voting, powered by [Astro](https://astro.build/).
 
@@ -31,8 +31,8 @@ A decentralized application built on Soroban for governance and voting, powered 
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/Consulting-Manao/tansu.git
-   cd tansu/dapp
+   git clone https://github.com/Consulting-Manao/cee-devpulsar.git
+   cd cee-devpulsar/dapp
    ```
 
 2. **Install dependencies**:
