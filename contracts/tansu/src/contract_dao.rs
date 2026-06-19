@@ -811,7 +811,7 @@ impl DaoTrait for Tansu {
                     .get::<types::ProjectKey, types::VoteTallies>(
                         &types::ProjectKey::ProposalTallies(project_key.clone(), proposal_id),
                     )
-                    .unwrap()
+                    .unwrap_or_else(|| panic_with_error!(&env, &errors::ContractErrors::NoProposalOrPageFound))
                 {
                     types::VoteTallies::PublicVote(t) => t,
                     types::VoteTallies::AnonymousVote(_) => unreachable!(),
