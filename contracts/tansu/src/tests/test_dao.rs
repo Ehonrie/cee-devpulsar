@@ -533,7 +533,7 @@ fn voting_errors() {
         .try_get_proposal(&id, &10)
         .unwrap_err()
         .unwrap();
-    assert_eq!(err, ContractErrors::NoProposalorPageFound.into());
+    assert_eq!(err, ContractErrors::NoProposalOrPageFound.into());
 
     // Too early to execute
     let err = setup

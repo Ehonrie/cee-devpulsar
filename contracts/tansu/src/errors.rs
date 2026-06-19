@@ -28,7 +28,7 @@ pub enum ContractErrors {
 
     // State (300-399)
     NoHashFound = 300,
-    NoProposalorPageFound = 301,
+    NoProposalOrPageFound = 301,
     NoProjectPageFound = 302,
     NoAnonymousVotingConfig = 303,
 

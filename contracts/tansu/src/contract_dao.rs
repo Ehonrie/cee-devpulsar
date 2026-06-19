@@ -287,7 +287,7 @@ impl DaoTrait for Tansu {
 
         // Prevent exceeding maximum page limit
         if page >= MAX_PAGES {
-            panic_with_error!(&env, &errors::ContractErrors::NoProposalorPageFound);
+            panic_with_error!(&env, &errors::ContractErrors::NoProposalOrPageFound);
         }
 
         env.storage().persistent().set(
@@ -383,7 +383,7 @@ impl DaoTrait for Tansu {
         let dao_page = Self::get_dao(env.clone(), project_key.clone(), page);
         let proposal = match dao_page.proposals.try_get(sub_id) {
             Ok(Some(proposal)) => proposal,
-            _ => panic_with_error!(&env, &errors::ContractErrors::NoProposalorPageFound),
+            _ => panic_with_error!(&env, &errors::ContractErrors::NoProposalOrPageFound),
         };
 
         if proposal.status != types::ProposalStatus::Active {
@@ -494,7 +494,7 @@ impl DaoTrait for Tansu {
         let mut dao_page = Self::get_dao(env.clone(), project_key.clone(), page);
         let mut proposal = match dao_page.proposals.try_get(sub_id) {
             Ok(Some(proposal)) => proposal,
-            _ => panic_with_error!(&env, &errors::ContractErrors::NoProposalorPageFound),
+            _ => panic_with_error!(&env, &errors::ContractErrors::NoProposalOrPageFound),
         };
 
         // only allow to execute once
@@ -557,7 +557,7 @@ impl DaoTrait for Tansu {
         let dao_page = Self::get_dao(env.clone(), project_key.clone(), page);
         let proposal = match dao_page.proposals.try_get(sub_id) {
             Ok(Some(proposal)) => proposal,
-            _ => panic_with_error!(&env, &errors::ContractErrors::NoProposalorPageFound),
+            _ => panic_with_error!(&env, &errors::ContractErrors::NoProposalOrPageFound),
         };
 
         // Check that voting period has not ended
@@ -742,7 +742,7 @@ impl DaoTrait for Tansu {
         let mut dao_page = Self::get_dao(env.clone(), project_key.clone(), page);
         let mut proposal = match dao_page.proposals.try_get(sub_id) {
             Ok(Some(proposal)) => proposal,
-            _ => panic_with_error!(&env, &errors::ContractErrors::NoProposalorPageFound),
+            _ => panic_with_error!(&env, &errors::ContractErrors::NoProposalOrPageFound),
         };
 
         let curr_timestamp = env.ledger().timestamp();
@@ -982,7 +982,7 @@ impl DaoTrait for Tansu {
     /// * If the page number is out of bounds
     fn get_dao(env: Env, project_key: Bytes, page: u32) -> types::Dao {
         if page >= MAX_PAGES {
-            panic_with_error!(&env, &errors::ContractErrors::NoProposalorPageFound);
+            panic_with_error!(&env, &errors::ContractErrors::NoProposalOrPageFound);
         }
 
         let key_ = types::ProjectKey::Key(project_key.clone());
@@ -1022,7 +1022,7 @@ impl DaoTrait for Tansu {
         let proposals = dao_page.proposals;
         let mut proposal = match proposals.try_get(sub_id) {
             Ok(Some(proposal)) => proposal,
-            _ => panic_with_error!(&env, &errors::ContractErrors::NoProposalorPageFound),
+            _ => panic_with_error!(&env, &errors::ContractErrors::NoProposalOrPageFound),
         };
         proposal.vote_data.votes = get_all_votes(&env, &project_key, proposal_id);
         proposal
