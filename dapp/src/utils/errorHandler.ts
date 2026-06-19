@@ -3,7 +3,6 @@ import { parseContractError } from "./contractErrors";
 /** Shared error handling; contract messages via parseContractError (contractErrors.ts). */
 
 interface ErrorHandlerOptions {
-  showUser?: boolean;
   rethrow?: boolean;
 }
 
