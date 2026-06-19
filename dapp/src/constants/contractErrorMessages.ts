@@ -18,7 +18,7 @@ export const contractErrorMessages = {
 
   // Authorization/Permission (100-199)
   100: "The user is not a maintainer.",
-  101: "You are invalid voter.",
+  101: "You are an invalid voter.",
   103: "Need a minimum of one maintainer",
 
   // Validation (200-299)
